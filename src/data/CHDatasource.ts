@@ -37,7 +37,7 @@ import {
   SelectedColumn,
   SqlFunction,
 } from 'types/queryBuilder';
-import { AdHocFilter } from './adHocFilter';
+import { AdHocFilter, AdHocVariableFilter } from './adHocFilter';
 import { cloneDeep, isEmpty, isString } from 'lodash';
 import {
   DEFAULT_LOGS_ALIAS,
@@ -136,7 +136,7 @@ export class Datasource
       return undefined;
     }
 
-    
+
 
     const timeColumn = getColumnByHint(query.builderOptions, ColumnHint.Time);
     if (timeColumn === undefined) {
@@ -239,14 +239,18 @@ export class Datasource
     rawQuery = this.replace(rawQuery, scoped) || '';
 
     // now apply ad-hoc filters after table references have been resolved
-    if (!this.skipAdHocFilter && this.settings.jsonData.appendContextFilters !== false) {
+    if (!this.skipAdHocFilter) {
       const adHocFilters = (templateSrv as any)?.getAdhocFilters(this.name);
       if (this.adHocFiltersStatus === AdHocFilterStatus.disabled && adHocFilters?.length > 0) {
         throw new Error(
           `Unable to apply ad hoc filters. Upgrade ClickHouse to >=${this.adHocCHVerReq.major}.${this.adHocCHVerReq.minor} or remove ad hoc filters for the dashboard.`
         );
       }
-      rawQuery = this.adHocFilter.apply(rawQuery, adHocFilters);
+      
+      rawQuery = this.applyAdhocFiltersAll(rawQuery, adHocFilters);
+      if (this.settings.jsonData.appendContextFilters !== false) {
+        rawQuery = this.adHocFilter.apply(rawQuery, adHocFilters);
+      }
     }
     this.skipAdHocFilter = false;
 
@@ -254,6 +258,22 @@ export class Datasource
       ...query,
       rawSql: rawQuery,
     };
+  }
+
+  applyAdhocFiltersAll(rawQuery: string, adHocFilters: AdHocVariableFilter[]): string {
+    if (!rawQuery) {
+      return rawQuery;
+    }
+
+    const macro = '$__adhocFiltersAll';
+    let macroIndex = rawQuery.lastIndexOf(macro);
+    if (macroIndex === -1) {
+      return rawQuery;
+    }
+
+    rawQuery.replaceAll(macro, this.adHocFilter.applyVars(rawQuery, adHocFilters))
+
+    return rawQuery;
   }
 
   applyConditionalAll(rawQuery: string, templateVars: TypedVariableModel[]): string {
@@ -301,7 +321,7 @@ export class Datasource
     const lookupByLogsAlias = logAliasToColumnHints.has(columnName) ? getColumnByHint(query.builderOptions, logAliasToColumnHints.get(columnName)!) : undefined;
     const lookupByLogLabels = dataFrameHasLogLabelWithName(actionFrame, columnName) && getColumnByHint(query.builderOptions, ColumnHint.LogLabels);
     const column = lookupByAlias || lookupByName || lookupByLogsAlias || lookupByLogLabels;
-    
+
     let nextFilters: Filter[] = (query.builderOptions.filters?.slice() || []);
     if (action.type === 'ADD_FILTER') {
       // we need to remove *any other EQ or NE* for the same field,
@@ -545,10 +565,10 @@ export class Datasource
 
   /**
    * Used to populate suggestions in the filter editor for Map columns.
-   * 
+   *
    * Samples rows to get a unique set of keys for the map.
    * May not include ALL keys for a given dataset.
-   * 
+   *
    * TODO: This query can be slow/expensive
    */
   async fetchUniqueMapKeys(mapColumn: string, db: string, table: string): Promise<string[]> {
@@ -940,11 +960,11 @@ export class Datasource
 
   /**
    * Runs a query based on a single log row and a direction (forward/backward)
-   * 
+   *
    * Will remove all filters and ORDER BYs, and will re-add them based on the configured context columns.
    * Context columns are used to narrow down to a single logging unit as defined by your logging infrastructure.
    * Typically this will be a single service, or container/pod in docker/k8s.
-   * 
+   *
    * If no context columns can be matched from the selected data frame, then the query is not run.
    */
   async getLogRowContext(row: LogRowModel, options?: LogRowContextOptions, query?: CHQuery | undefined, cacheFilters?: boolean): Promise<DataQueryResponse> {
@@ -1013,7 +1033,7 @@ export class Datasource
   showContextToggle(row?: LogRowModel): boolean {
     return true;
   }
-  
+
   /**
    * Returns a React component that is displayed in the top portion of the log context panel
    */

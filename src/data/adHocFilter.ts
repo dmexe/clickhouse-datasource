@@ -10,6 +10,14 @@ export class AdHocFilter {
     }
   }
 
+  applyVars(sql: string, adHocFilters: AdHocVariableFilter[]): string {
+    if (sql === '' || !adHocFilters || adHocFilters.length === 0) {
+      return sql;
+    }
+
+    return sql;
+  }
+
   apply(sql: string, adHocFilters: AdHocVariableFilter[]): string {
     if (sql === '' || !adHocFilters || adHocFilters.length === 0) {
       return sql;
