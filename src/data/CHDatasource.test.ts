@@ -150,6 +150,54 @@ describe('ClickHouseDatasource', () => {
       // Verify that the final query contains the ad-hoc filters
       expect(result.rawSql).toEqual(sqlWithAdHocFilters);
     });
+
+    it('should not apply ad-hoc filters when explicitly disabled', async () => {
+      // Setup the query with template variables for table names
+      const query = {
+        rawSql: 'SELECT * FROM ${database}.${table}',
+        editorType: EditorType.SQL
+      } as CHQuery;
+
+      // Mock the ad-hoc filter
+      const adHocFilter = new AdHocFilter();
+
+      // The resolved table name after template variable substitution
+      const resolvedSql = 'SELECT * FROM test_db.test_table';
+
+      // The expected final SQL with ad-hoc filters applied
+      const sqlWithAdHocFilters = `SELECT * FROM test_db.test_table`;
+
+      // Mock the template variable resolution
+      const spyOnReplace = jest.spyOn(templateSrvMock, 'replace').mockImplementation(() => resolvedSql);
+      const spyOnGetVars = jest.spyOn(templateSrvMock, 'getVariables').mockImplementation(() => []);
+
+      // Setup ad-hoc filters
+      const adHocFilters = [
+        { key: 'column', operator: '=', value: 'value' }
+      ];
+
+      // Mock getAdhocFilters to return our test filters
+      jest.spyOn(templateSrvMock, 'getAdhocFilters').mockImplementation(() => adHocFilters);
+
+      // Mock adHocFilter.apply to return our expected modified SQL
+      const applyFilterSpy = jest.spyOn(adHocFilter, 'apply').mockImplementation(() => sqlWithAdHocFilters);
+
+      // Create datasource instance with our mocked ad-hoc filter
+      const ds = createInstance({});
+      ds.settings.jsonData.appendContextFilters = false
+      ds.adHocFilter = adHocFilter;
+
+      // Execute the method
+      const result = ds.applyTemplateVariables(query, {});
+
+      // Verify template variables were resolved before ad-hoc filters were applied
+      expect(spyOnReplace).toHaveBeenCalled();
+      expect(spyOnGetVars).toHaveBeenCalled();
+      expect(applyFilterSpy).not.toHaveBeenCalled();
+
+      // Verify that the final query contains the ad-hoc filters
+      expect(result.rawSql).toEqual(sqlWithAdHocFilters);
+    });
   });
 
   describe('Tag Keys', () => {
@@ -356,7 +404,7 @@ describe('ClickHouseDatasource', () => {
         JSON.stringify({ keys: 'a.b.e', values: ['Bool'] })
       ]);
       jest.spyOn(ds, 'query').mockImplementation((_request) => of({ data: [frame] }));
-      
+
       const jsonColumns = await ds.fetchPathsForJSONColumns('db_name', 'table_name', 'jsonCol');
       expect(jsonColumns).toMatchObject([
         { name: 'jsonCol.a.b.c', label: 'jsonCol.a.b.c', type: 'Int64', picklistValues: [] },

@@ -239,7 +239,7 @@ export class Datasource
     rawQuery = this.replace(rawQuery, scoped) || '';
 
     // now apply ad-hoc filters after table references have been resolved
-    if (!this.skipAdHocFilter) {
+    if (!this.skipAdHocFilter && this.settings.jsonData.appendContextFilters !== false) {
       const adHocFilters = (templateSrv as any)?.getAdhocFilters(this.name);
       if (this.adHocFiltersStatus === AdHocFilterStatus.disabled && adHocFilters?.length > 0) {
         throw new Error(
