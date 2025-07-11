@@ -19,6 +19,7 @@ describe('QuerySettingsConfig', () => {
         onDialTimeoutChange={() => {}}
         onQueryTimeoutChange={() => {}}
         onValidateSqlChange={() => {}}
+        onAppendContextFilters={() => {}}
       />
     );
     expect(result.container.firstChild).not.toBeNull();
@@ -34,6 +35,7 @@ describe('QuerySettingsConfig', () => {
         onDialTimeoutChange={onDialTimeout}
         onQueryTimeoutChange={() => {}}
         onValidateSqlChange={() => {}}
+        onAppendContextFilters={() => {}}
       />
     );
     expect(result.container.firstChild).not.toBeNull();
@@ -56,6 +58,7 @@ describe('QuerySettingsConfig', () => {
         onDialTimeoutChange={() => {}}
         onQueryTimeoutChange={onQueryTimeout}
         onValidateSqlChange={() => {}}
+        onAppendContextFilters={() => {}}
       />
     );
     expect(result.container.firstChild).not.toBeNull();
@@ -78,6 +81,7 @@ describe('QuerySettingsConfig', () => {
         onDialTimeoutChange={() => {}}
         onQueryTimeoutChange={() => {}}
         onValidateSqlChange={onValidateSqlChange}
+        onAppendContextFilters={() => {}}
       />
     );
     expect(result.container.firstChild).not.toBeNull();
@@ -99,6 +103,7 @@ describe('QuerySettingsConfig', () => {
         onDialTimeoutChange={() => {}}
         onQueryTimeoutChange={() => {}}
         onValidateSqlChange={() => {}}
+        onAppendContextFilters={() => {}}
       />
     );
     expect(result.container.firstChild).not.toBeNull();
@@ -121,11 +126,14 @@ describe('QuerySettingsConfig', () => {
         onDialTimeoutChange={() => {}}
         onQueryTimeoutChange={() => {}}
         onValidateSqlChange={() => {}}
+        onAppendContextFilters={() => {}}
       />
     );
     expect(result.container.firstChild).not.toBeNull();
 
-    const input = result.getByPlaceholderText(allLabels.components.Config.QuerySettingsConfig.connMaxLifetime.placeholder);
+    const input = result.getByPlaceholderText(
+      allLabels.components.Config.QuerySettingsConfig.connMaxLifetime.placeholder
+    );
     expect(input).toBeInTheDocument();
     fireEvent.change(input, { target: { value: '10' } });
     fireEvent.blur(input);
@@ -143,6 +151,7 @@ describe('QuerySettingsConfig', () => {
         onDialTimeoutChange={() => {}}
         onQueryTimeoutChange={() => {}}
         onValidateSqlChange={() => {}}
+        onAppendContextFilters={() => {}}
       />
     );
     expect(result.container.firstChild).not.toBeNull();

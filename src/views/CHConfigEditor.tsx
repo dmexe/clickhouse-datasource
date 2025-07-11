@@ -70,7 +70,7 @@ export const ConfigEditor: React.FC<ConfigEditorProps> = (props) => {
   const onSwitchToggle = (
     key: keyof Pick<
       CHConfig,
-      'secure' | 'validateSql' | 'enableSecureSocksProxy' | 'forwardGrafanaHeaders' | 'enableRowLimit'
+      'secure' | 'validateSql' | 'enableSecureSocksProxy' | 'forwardGrafanaHeaders' | 'enableRowLimit' | 'appendContextFilters'
     >,
     value: boolean
   ) => {
@@ -414,12 +414,14 @@ export const ConfigEditor: React.FC<ConfigEditorProps> = (props) => {
           maxOpenConns={jsonData.maxOpenConns}
           queryTimeout={jsonData.queryTimeout}
           validateSql={jsonData.validateSql}
+          appendContextFilters={jsonData.appendContextFilters}
           onConnMaxIdleConnsChange={onUpdateDatasourceJsonDataOption(props, 'maxIdleConns')}
           onConnMaxLifetimeChange={onUpdateDatasourceJsonDataOption(props, 'connMaxLifetime')}
           onConnMaxOpenConnsChange={onUpdateDatasourceJsonDataOption(props, 'maxOpenConns')}
           onDialTimeoutChange={onUpdateDatasourceJsonDataOption(props, 'dialTimeout')}
           onQueryTimeoutChange={onUpdateDatasourceJsonDataOption(props, 'queryTimeout')}
           onValidateSqlChange={e => onSwitchToggle('validateSql', e.currentTarget.checked)}
+          onAppendContextFilters={e => onSwitchToggle('appendContextFilters', e.currentTarget.checked)}
         />
 
         <Divider />

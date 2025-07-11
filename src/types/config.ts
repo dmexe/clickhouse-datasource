@@ -27,6 +27,7 @@ export interface CHConfig extends DataSourceJsonData {
   maxOpenConns?: string;
   queryTimeout?: string;
   validateSql?: boolean;
+  appendContextFilters?: boolean;
 
   logs?: CHLogsConfig;
   traces?: CHTracesConfig;

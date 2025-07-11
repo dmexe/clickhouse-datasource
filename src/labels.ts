@@ -154,6 +154,10 @@ export default {
         validateSql: {
           label: 'Validate SQL',
           tooltip: 'Validate SQL in the editor.'
+        },
+        appendContextFilters: {
+          label: 'Append Context Filters',
+          tooltip: 'Append Context Filters to SQL query'
         }
       },
       TracesConfig: {
