@@ -35,7 +35,7 @@ export const QuerySettingsConfig = (props: QuerySettingsConfigProps) => {
     onDialTimeoutChange,
     onQueryTimeoutChange,
     onValidateSqlChange,
-    onAppendContextFilters
+    onAppendContextFilters,
   } = props;
 
   const labels = allLabels.components.Config.QuerySettingsConfig;
@@ -104,12 +104,19 @@ export const QuerySettingsConfig = (props: QuerySettingsConfigProps) => {
       </Field>
 
       <Field label={labels.validateSql.label} description={labels.validateSql.tooltip}>
-        <Switch className="gf-form" value={validateSql || false} onChange={onValidateSqlChange} role="checkbox" />
+        <Switch
+          className="gf-form"
+          aria-label="validateSql"
+          value={validateSql || false}
+          onChange={onValidateSqlChange}
+          role="checkbox"
+        />
       </Field>
 
       <Field label={labels.appendContextFilters.label} description={labels.appendContextFilters.tooltip}>
         <Switch
           className="gf-form"
+          aria-label="appendContextFilters"
           value={appendContextFilters || true}
           onChange={onAppendContextFilters}
           role="checkbox"

@@ -120,6 +120,7 @@ describe('ConfigEditor', () => {
       queryTimeout: '100',
       dialTimeout: '100',
       validateSql: true,
+      appendContextFilters: true,
       customSettings: [{ setting: 'test-setting', value: 'test-value' }],
       forwardGrafanaHeaders: true,
       enableRowLimit: true,
