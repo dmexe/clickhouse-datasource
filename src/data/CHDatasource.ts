@@ -271,7 +271,7 @@ export class Datasource
       return rawQuery;
     }
 
-    rawQuery.replaceAll(macro, this.adHocFilter.applyVars(rawQuery, adHocFilters))
+    rawQuery.replaceAll(macro, this.adHocFilter.toClause(adHocFilters))
 
     return rawQuery;
   }

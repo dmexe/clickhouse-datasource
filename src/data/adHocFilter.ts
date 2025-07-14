@@ -10,12 +10,30 @@ export class AdHocFilter {
     }
   }
 
-  applyVars(sql: string, adHocFilters: AdHocVariableFilter[]): string {
-    if (sql === '' || !adHocFilters || adHocFilters.length === 0) {
-      return sql;
+  toClause(adHocFilters: AdHocVariableFilter[]): string {
+    if (adHocFilters.length == 0) {
+      return "1=1"
     }
 
-    return sql;
+    const filters = adHocFilters
+      .filter((filter: AdHocVariableFilter) => {
+        const valid = isValid(filter);
+        if (!valid) {
+          console.warn('Invalid adhoc filter will be ignored:', filter);
+        }
+        return valid;
+      })
+      .map((f, i) => {
+        const key = escapeKey(f.key);
+        const value = escapeValueBasedOnOperator(f.value, f.operator);
+        const condition = i !== adHocFilters.length - 1 ? (f.condition ? f.condition : 'AND') : '';
+        const operator = convertOperatorToClickHouseOperator(f.operator);
+        return ` ${key} ${operator} ${value} ${condition}`;
+      })
+      .join('');
+
+    return filters;
+
   }
 
   apply(sql: string, adHocFilters: AdHocVariableFilter[]): string {

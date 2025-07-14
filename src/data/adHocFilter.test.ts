@@ -12,6 +12,26 @@ describe('AdHocManager', () => {
       `SELECT stuff FROM foo WHERE col = test settings additional_table_filters={'foo' : ' key = \\'val\\' AND keyNum = \\'123\\' '}`
     );
   });
+  it('return SQL conditions for ad hoc filter', () => {
+    const ahm = new AdHocFilter();
+    ahm.setTargetTableFromQuery('SELECT * FROM foo');
+    const val = ahm.toClause([
+      { key: 'key', operator: '=', value: 'val' },
+      { key: 'keyLike', operator: '=~', value: '123' },
+      { key: 'keyNotLike', operator: '!~', value: '123' },
+    ] as AdHocVariableFilter[]);
+    expect(val).toEqual(
+      ` key = \\'val\\' AND keyLike ILIKE \\'123\\' AND keyNotLike NOT ILIKE \\'123\\' `
+    );
+  });
+  it('return empty SQL conditions when no ad hoc filters', () => {
+    const ahm = new AdHocFilter();
+    ahm.setTargetTableFromQuery('SELECT * FROM foo');
+    const val = ahm.toClause([] as AdHocVariableFilter[]);
+    expect(val).toEqual(
+      `1=1`
+    );
+  });
   it('apply ad hoc filter with no inner query and no existing WHERE', () => {
     const ahm = new AdHocFilter();
     ahm.setTargetTableFromQuery('SELECT * FROM foo');
