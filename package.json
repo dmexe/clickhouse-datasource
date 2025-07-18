@@ -1,7 +1,7 @@
 {
-  "name": "clickhouse-datasource",
+  "name": "sincera-clickhouse-datasource",
   "version": "4.10.1",
-  "description": "Clickhouse Datasource",
+  "description": "Clickhouse Datasource (Sincera)",
   "engines": {
     "node": ">=20"
   },
