@@ -117,7 +117,7 @@ export const QuerySettingsConfig = (props: QuerySettingsConfigProps) => {
         <Switch
           className="gf-form"
           aria-label="appendContextFilters"
-          value={appendContextFilters || true}
+          value={appendContextFilters || false}
           onChange={onAppendContextFilters}
           role="checkbox"
         />

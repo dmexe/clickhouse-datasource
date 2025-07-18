@@ -15,7 +15,8 @@ export class AdHocFilter {
       return "1=1"
     }
 
-    const realColumns = ['host', 'level', 'service', 'message'];
+    const realColumns = ['host', 'level', 'service', 'message',
+                         'logs.host', 'logs.level', 'logs.service', 'logs.message'];
 
     const filters = adHocFilters
       .filter((filter: AdHocVariableFilter) => {
@@ -28,10 +29,10 @@ export class AdHocFilter {
       .map((f, i) => {
         let key = escapeKey(f.key);
         if (!realColumns.includes(f.key)) {
-          key = `labels[\\'${f.key}\\']`
+          key = `labels['${f.key}']`
         }
 
-        const value = escapeValueBasedOnOperator(f.value, f.operator);
+        const value = `'${f.value}'`
         const condition = i !== adHocFilters.length - 1 ? (f.condition ? f.condition : 'AND') : '';
         const operator = convertOperatorToClickHouseOperator(f.operator);
         return ` ${key} ${operator} ${value} ${condition}`;

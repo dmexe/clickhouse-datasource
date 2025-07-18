@@ -71,6 +71,7 @@ export class Datasource
     super(instanceSettings);
     this.settings = instanceSettings;
     this.adHocFilter = new AdHocFilter();
+    this.settings.jsonData.appendContextFilters = false;
   }
 
   getDataProvider(
@@ -246,10 +247,14 @@ export class Datasource
           `Unable to apply ad hoc filters. Upgrade ClickHouse to >=${this.adHocCHVerReq.major}.${this.adHocCHVerReq.minor} or remove ad hoc filters for the dashboard.`
         );
       }
-      
+
       rawQuery = this.applyAdhocFiltersAll(rawQuery, adHocFilters);
       if (this.settings.jsonData.appendContextFilters !== false) {
-        rawQuery = this.adHocFilter.apply(rawQuery, adHocFilters);
+        try {
+          rawQuery = this.adHocFilter.apply(rawQuery, adHocFilters);
+        } catch (error) {
+          console.error(error)
+        }
       }
     }
     this.skipAdHocFilter = false;
@@ -271,9 +276,7 @@ export class Datasource
       return rawQuery;
     }
 
-    rawQuery.replaceAll(macro, this.adHocFilter.toClause(adHocFilters))
-
-    return rawQuery;
+    return rawQuery.replaceAll(macro, this.adHocFilter.toClause(adHocFilters))
   }
 
   applyConditionalAll(rawQuery: string, templateVars: TypedVariableModel[]): string {
