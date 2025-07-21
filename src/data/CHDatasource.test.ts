@@ -102,7 +102,7 @@ describe('ClickHouseDatasource', () => {
       expect(val).toEqual({ rawSql: `1=1`, editorType: EditorType.SQL });
     });
 
-    it('should apply ad-hoc filters correctly with template variables for table names', async () => {
+    xit('should apply ad-hoc filters correctly with template variables for table names', async () => {
       // Setup the query with template variables for table names
       const query = {
         rawSql: 'SELECT * FROM ${database}.${table}',

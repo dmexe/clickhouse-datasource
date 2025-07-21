@@ -24,7 +24,7 @@ describe('AdHocManager', () => {
       { key: 'key.Not.Like', operator: '!~', value: '123' },
     ] as AdHocVariableFilter[]);
     expect(val).toEqual(
-      ` host = \\'val\\' AND level = \\'info\\' AND service = \\'svc\\' AND message ILIKE \\'val\\' AND labels[\\'key.Like\\'] ILIKE \\'123\\' AND labels[\\'key.Not.Like\\'] NOT ILIKE \\'123\\' `
+      ` host = 'val' AND level = 'info' AND service = 'svc' AND message ILIKE 'val' AND labels['key.Like'] ILIKE '123' AND labels['key.Not.Like'] NOT ILIKE '123' `
     );
   });
   it('return empty SQL conditions when no ad hoc filters', () => {

@@ -10,14 +10,12 @@ interface QuerySettingsConfigProps {
   maxOpenConns?: string;
   queryTimeout?: string;
   validateSql?: boolean;
-  appendContextFilters?: boolean;
   onConnMaxIdleConnsChange: (e: FormEvent<HTMLInputElement>) => void;
   onConnMaxLifetimeChange: (e: FormEvent<HTMLInputElement>) => void;
   onConnMaxOpenConnsChange: (e: FormEvent<HTMLInputElement>) => void;
   onDialTimeoutChange: (e: FormEvent<HTMLInputElement>) => void;
   onQueryTimeoutChange: (e: FormEvent<HTMLInputElement>) => void;
   onValidateSqlChange: (e: FormEvent<HTMLInputElement>) => void;
-  onAppendContextFilters: (e: FormEvent<HTMLInputElement>) => void;
 }
 
 export const QuerySettingsConfig = (props: QuerySettingsConfigProps) => {
@@ -28,14 +26,12 @@ export const QuerySettingsConfig = (props: QuerySettingsConfigProps) => {
     maxOpenConns,
     queryTimeout,
     validateSql,
-    appendContextFilters,
     onConnMaxIdleConnsChange,
     onConnMaxLifetimeChange,
     onConnMaxOpenConnsChange,
     onDialTimeoutChange,
     onQueryTimeoutChange,
     onValidateSqlChange,
-    onAppendContextFilters,
   } = props;
 
   const labels = allLabels.components.Config.QuerySettingsConfig;
@@ -109,16 +105,6 @@ export const QuerySettingsConfig = (props: QuerySettingsConfigProps) => {
           aria-label="validateSql"
           value={validateSql || false}
           onChange={onValidateSqlChange}
-          role="checkbox"
-        />
-      </Field>
-
-      <Field label={labels.appendContextFilters.label} description={labels.appendContextFilters.tooltip}>
-        <Switch
-          className="gf-form"
-          aria-label="appendContextFilters"
-          value={appendContextFilters || false}
-          onChange={onAppendContextFilters}
           role="checkbox"
         />
       </Field>

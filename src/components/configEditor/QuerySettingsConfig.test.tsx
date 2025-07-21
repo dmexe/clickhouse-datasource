@@ -19,7 +19,6 @@ describe('QuerySettingsConfig', () => {
         onDialTimeoutChange={() => {}}
         onQueryTimeoutChange={() => {}}
         onValidateSqlChange={() => {}}
-        onAppendContextFilters={() => {}}
       />
     );
     expect(result.container.firstChild).not.toBeNull();
@@ -35,7 +34,6 @@ describe('QuerySettingsConfig', () => {
         onDialTimeoutChange={onDialTimeout}
         onQueryTimeoutChange={() => {}}
         onValidateSqlChange={() => {}}
-        onAppendContextFilters={() => {}}
       />
     );
     expect(result.container.firstChild).not.toBeNull();
@@ -58,7 +56,6 @@ describe('QuerySettingsConfig', () => {
         onDialTimeoutChange={() => {}}
         onQueryTimeoutChange={onQueryTimeout}
         onValidateSqlChange={() => {}}
-        onAppendContextFilters={() => {}}
       />
     );
     expect(result.container.firstChild).not.toBeNull();
@@ -81,7 +78,6 @@ describe('QuerySettingsConfig', () => {
         onDialTimeoutChange={() => {}}
         onQueryTimeoutChange={() => {}}
         onValidateSqlChange={onValidateSqlChange}
-        onAppendContextFilters={() => {}}
       />
     );
     expect(result.container.firstChild).not.toBeNull();
@@ -91,28 +87,6 @@ describe('QuerySettingsConfig', () => {
     fireEvent.click(input);
     expect(onValidateSqlChange).toHaveBeenCalledTimes(1);
     expect(onValidateSqlChange).toHaveBeenCalledWith(expect.any(Object));
-  });
-  
-  it('should call onAppendContextFilters when changed', () => {
-    const onAppendContextFiltersChange = jest.fn();
-    const result = render(
-      <QuerySettingsConfig
-        onConnMaxIdleConnsChange={() => {}}
-        onConnMaxLifetimeChange={() => {}}
-        onConnMaxOpenConnsChange={() => {}}
-        onDialTimeoutChange={() => {}}
-        onQueryTimeoutChange={() => {}}
-        onValidateSqlChange={() => {}}
-        onAppendContextFilters={onAppendContextFiltersChange}
-      />
-    );
-    expect(result.container.firstChild).not.toBeNull();
-
-    const input = result.getByRole('checkbox', { name: 'appendContextFilters' });
-    expect(input).toBeInTheDocument();
-    fireEvent.click(input);
-    expect(onAppendContextFiltersChange).toHaveBeenCalledTimes(1);
-    expect(onAppendContextFiltersChange).toHaveBeenCalledWith(expect.any(Object));
   });
 
   it('should call onConnMaxIdleConnsChange when changed', () => {
@@ -125,7 +99,6 @@ describe('QuerySettingsConfig', () => {
         onDialTimeoutChange={() => {}}
         onQueryTimeoutChange={() => {}}
         onValidateSqlChange={() => {}}
-        onAppendContextFilters={() => {}}
       />
     );
     expect(result.container.firstChild).not.toBeNull();
@@ -148,7 +121,6 @@ describe('QuerySettingsConfig', () => {
         onDialTimeoutChange={() => {}}
         onQueryTimeoutChange={() => {}}
         onValidateSqlChange={() => {}}
-        onAppendContextFilters={() => {}}
       />
     );
     expect(result.container.firstChild).not.toBeNull();
@@ -173,7 +145,6 @@ describe('QuerySettingsConfig', () => {
         onDialTimeoutChange={() => {}}
         onQueryTimeoutChange={() => {}}
         onValidateSqlChange={() => {}}
-        onAppendContextFilters={() => {}}
       />
     );
     expect(result.container.firstChild).not.toBeNull();
