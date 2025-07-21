@@ -82,7 +82,7 @@ describe('QuerySettingsConfig', () => {
     );
     expect(result.container.firstChild).not.toBeNull();
 
-    const input = result.getByRole('checkbox', { name: 'validateSql' });
+    const input = result.getByRole('checkbox');
     expect(input).toBeInTheDocument();
     fireEvent.click(input);
     expect(onValidateSqlChange).toHaveBeenCalledTimes(1);
@@ -125,9 +125,7 @@ describe('QuerySettingsConfig', () => {
     );
     expect(result.container.firstChild).not.toBeNull();
 
-    const input = result.getByPlaceholderText(
-      allLabels.components.Config.QuerySettingsConfig.connMaxLifetime.placeholder
-    );
+    const input = result.getByPlaceholderText(allLabels.components.Config.QuerySettingsConfig.connMaxLifetime.placeholder);
     expect(input).toBeInTheDocument();
     fireEvent.change(input, { target: { value: '10' } });
     fireEvent.blur(input);

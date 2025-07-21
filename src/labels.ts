@@ -154,10 +154,6 @@ export default {
         validateSql: {
           label: 'Validate SQL',
           tooltip: 'Validate SQL in the editor.'
-        },
-        appendContextFilters: {
-          label: 'Append Context Filters',
-          tooltip: 'Append Context Filters to SQL query'
         }
       },
       TracesConfig: {
@@ -177,7 +173,7 @@ export default {
         columns: {
          title: 'Default columns',
          description: 'Default columns for trace queries. Leave empty to disable.',
-         
+
          traceId: {
           label: 'Trace ID column',
           tooltip: 'Column for the trace ID'
@@ -269,7 +265,7 @@ export default {
         columns: {
           title: 'Default columns',
           description: 'Default columns for log queries. Leave empty to disable.',
-          
+
           time: {
             label: 'Time column',
             tooltip: 'Column for the log timestamp'
