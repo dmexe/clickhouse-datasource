@@ -281,6 +281,26 @@ describe('ClickHouseDatasource', () => {
         "SELECT * FROM complex_table settings additional_table_filters={'my_table': ' key = \\'val\\' '}"
       );
     });
+
+    it('should handle $__adHocFiltersAll macro', async () => {
+      const query = {
+        rawSql: "SELECT * FROM complex_table WHERE $__adhocFiltersAll",
+        editorType: EditorType.SQL,
+      } as CHQuery;
+
+      const adHocFilters = [{ key: 'key', operator: '=', value: 'val' }];
+
+      const spyOnReplace = jest.spyOn(templateSrvMock, 'replace').mockImplementation((x) => x);
+      const spyOnGetVars = jest.spyOn(templateSrvMock, 'getVariables').mockImplementation(() => []);
+
+      const result = createInstance({}).applyTemplateVariables(query, {}, adHocFilters);
+
+      expect(spyOnReplace).toHaveBeenCalled();
+      expect(spyOnGetVars).toHaveBeenCalled();
+      expect(result.rawSql).toEqual(
+        "SELECT * FROM complex_table WHERE  labels['key'] = 'val' "
+      );
+    });
   });
 
   describe('Tag Keys', () => {

@@ -64,6 +64,40 @@ export class AdHocFilter {
     sql = sql.replace(';', '');
     return `${sql} settings additional_table_filters={'${this._targetTable}' : '${filters}'}`;
   }
+
+  toClause(adHocFilters: AdHocVariableFilter[]): string {
+    if (adHocFilters.length == 0) {
+      return "1=1"
+    }
+
+    const realColumns = [
+      'host', 'level', 'service', 'message',
+      'logs.host', 'logs.level', 'logs.service', 'logs.message'
+    ];
+
+    const filters = adHocFilters
+      .filter((filter: AdHocVariableFilter) => {
+        const valid = isValid(filter);
+        if (!valid) {
+          console.warn('Invalid adhoc filter will be ignored:', filter);
+        }
+        return valid;
+      })
+      .map((f, i) => {
+        let key = escapeKey(f.key);
+        if (!realColumns.includes(f.key)) {
+          key = `labels['${f.key}']`
+        }
+
+        const value = `'${f.value}'`
+        const condition = i !== adHocFilters.length - 1 ? (f.condition ? f.condition : 'AND') : '';
+        const operator = convertOperatorToClickHouseOperator(f.operator);
+        return ` ${key} ${operator} ${value} ${condition}`;
+      })
+      .join('');
+
+    return filters;
+  }
 }
 
 function isValid(filter: AdHocVariableFilter): boolean {

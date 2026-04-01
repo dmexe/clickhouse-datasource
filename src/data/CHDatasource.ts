@@ -44,7 +44,7 @@ import {
 } from 'types/queryBuilder';
 import { CHQuery, EditorType } from 'types/sql';
 import { pluginVersion } from 'utils/version';
-import { AdHocFilter } from './adHocFilter';
+import { AdHocFilter, AdHocVariableFilter } from './adHocFilter';
 import {
   DEFAULT_LOGS_ALIAS,
   getIntervalInfo,
@@ -261,7 +261,15 @@ export class Datasource
 
       // Only apply automatic filters if the macro was not used
       if (!hasMacro) {
-        rawQuery = this.adHocFilter.apply(rawQuery, filters, useJSON);
+        if (this.isApplyAdhocFiltersAll(rawQuery)) {
+          rawQuery = this.applyAdhocFiltersAll(rawQuery, filters);
+        } else {
+          try {
+            rawQuery = this.adHocFilter.apply(rawQuery, filters, useJSON);
+          } catch (error) {
+            console.error(error)
+          }
+        }
       }
     }
     this.skipAdHocFilter = false;
@@ -270,6 +278,29 @@ export class Datasource
       ...query,
       rawSql: rawQuery,
     };
+  }
+
+  isApplyAdhocFiltersAll(rawQuery: string): boolean {
+    if (!rawQuery) {
+      return false;
+    }
+
+    const macro = '$__adhocFiltersAll';
+    let macroIndex = rawQuery.lastIndexOf(macro);
+    if (macroIndex === -1) {
+      return false;
+    }
+
+    return true;
+  }
+
+  applyAdhocFiltersAll(rawQuery: string, adHocFilters: AdHocVariableFilter[]): string {
+    if (!this.isApplyAdhocFiltersAll(rawQuery)) {
+      return rawQuery;
+    }
+
+    const macro = '$__adhocFiltersAll';
+    return rawQuery.replaceAll(macro, this.adHocFilter.toClause(adHocFilters))
   }
 
   applyConditionalAll(rawQuery: string, templateVars: TypedVariableModel[]): string {

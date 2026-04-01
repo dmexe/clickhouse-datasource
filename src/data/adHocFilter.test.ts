@@ -313,4 +313,27 @@ describe('AdHocManager', () => {
     ] as AdHocVariableFilter[]);
     expect(val).toEqual(`SELECT stuff FROM foo settings additional_table_filters={'foo' : ' key.key2 = \\'val\\' '}`);
   });
+  it('return SQL conditions for ad hoc filter', () => {
+    const ahm = new AdHocFilter();
+    ahm.setTargetTableFromQuery('SELECT * FROM foo');
+    const val = ahm.toClause([
+      { key: 'host', operator: '=', value: 'val' },
+      { key: 'level', operator: '=', value: 'info' },
+      { key: 'service', operator: '=', value: 'svc' },
+      { key: 'message', operator: '=~', value: 'val' },
+      { key: 'key.Like', operator: '=~', value: '123' },
+      { key: 'key.Not.Like', operator: '!~', value: '123' },
+    ] as AdHocVariableFilter[]);
+    expect(val).toEqual(
+      ` host = 'val' AND level = 'info' AND service = 'svc' AND message ILIKE 'val' AND labels['key.Like'] ILIKE '123' AND labels['key.Not.Like'] NOT ILIKE '123' `
+    );
+  });
+  it('return empty SQL conditions when no ad hoc filters', () => {
+    const ahm = new AdHocFilter();
+    ahm.setTargetTableFromQuery('SELECT * FROM foo');
+    const val = ahm.toClause([] as AdHocVariableFilter[]);
+    expect(val).toEqual(
+      `1=1`
+    );
+  });
 });
