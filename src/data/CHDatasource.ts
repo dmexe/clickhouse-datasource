@@ -42,7 +42,7 @@ import {
   TableColumn,
   TimeUnit,
 } from 'types/queryBuilder';
-import { CHQuery, EditorType } from 'types/sql';
+import { CHQuery, CHBuilderQuery, EditorType } from 'types/sql';
 import { pluginVersion } from 'utils/version';
 import { AdHocFilter } from './adHocFilter';
 import {
@@ -1125,6 +1125,32 @@ export class Datasource
     return contextColumns;
   }
 
+  defaultContextQueryBuilderTelemetryLogs(query: CHQuery): CHBuilderQuery {
+    return {
+      format: query.format,
+      pluginVersion: query.pluginVersion,
+      editorType: EditorType.Builder,
+      rawSql: "",
+      builderOptions: {
+        database: "telemetry",
+        table: "logs",
+        queryType: QueryType.Logs,
+        mode: BuilderMode.List,
+        columns: [
+          { name: "timestamp", hint: ColumnHint.Time },
+          { name: "level", hint: ColumnHint.LogLevel },
+          { name: "message", hint: ColumnHint.LogMessage },
+          { name: "service" },
+          { name: "host" },
+          { name: "labels", hint: ColumnHint.LogAttributes },
+        ],
+        meta: {
+          otelVersion: "latest"
+        }
+      }
+    } as CHBuilderQuery
+  }
+
   /**
    * Runs a query based on a single log row and a direction (forward/backward)
    *
@@ -1144,8 +1170,10 @@ export class Datasource
       throw new Error('Missing query for log context');
     } else if (!options || !options.direction || options.limit === undefined) {
       throw new Error('Missing log context options for query');
-    } else if (query.editorType === EditorType.SQL || !query.builderOptions) {
-      throw new Error('Log context feature only works for builder queries');
+    }
+
+    if (query.editorType === EditorType.SQL) {
+      query = this.defaultContextQueryBuilderTelemetryLogs(query)
     }
 
     const contextQuery = cloneDeep(query);
