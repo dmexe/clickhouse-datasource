@@ -66,7 +66,7 @@ export class AdHocFilter {
   }
 
   toClause(adHocFilters: AdHocVariableFilter[]): string {
-    if (adHocFilters.length == 0) {
+    if (adHocFilters.length === 0) {
       return "1=1"
     }
 

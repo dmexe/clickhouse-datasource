@@ -44,7 +44,7 @@ import {
 } from 'types/queryBuilder';
 import { CHQuery, EditorType } from 'types/sql';
 import { pluginVersion } from 'utils/version';
-import { AdHocFilter, AdHocVariableFilter } from './adHocFilter';
+import { AdHocFilter } from './adHocFilter';
 import {
   DEFAULT_LOGS_ALIAS,
   getIntervalInfo,
